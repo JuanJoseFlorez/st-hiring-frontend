@@ -1,22 +1,27 @@
+import { useState, SyntheticEvent } from 'react';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+
 function App() {
+  const [tab, setTab] = useState(0);
+
+  const handleChange = (_event: SyntheticEvent, newValue: number) => {
+    setTab(newValue);
+  };
+
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-      }}
-    >
-      <h1>See Tickets </h1>
-      <div className="card">
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-    </div>
+    <Container maxWidth="md" sx={{ py: 4 }}>
+      <Tabs value={tab} onChange={handleChange}>
+        <Tab label="Events" />
+        <Tab label="Settings" />
+      </Tabs>
+      <Box sx={{ mt: 3 }}>
+        {tab === 0 && <p>Events go here</p>}
+        {tab === 1 && <p>Settings go here</p>}
+      </Box>
+    </Container>
   );
 }
 
