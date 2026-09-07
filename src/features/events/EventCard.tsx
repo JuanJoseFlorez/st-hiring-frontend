@@ -17,7 +17,7 @@ interface EventCardProps {
 }
 
 const EventCard = ({ event }: EventCardProps) => (
-  <Card>
+  <Card sx={{ height: '100%' }}>
     <CardContent>
       <Typography variant="h6">{event.name}</Typography>
       <Typography variant="body2" color="text.secondary">

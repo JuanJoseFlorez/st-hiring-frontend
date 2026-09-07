@@ -13,7 +13,7 @@ const EventsList = () => {
   return (
     <Grid container spacing={2}>
       {data.map((event) => (
-        <Grid item xs={12} sm={6} md={4} key={event.id}>
+        <Grid item xs={12} sm={6} md={4} key={event.id} sx={{ display: 'flex' }}>
           <EventCard event={event} />
         </Grid>
       ))}
