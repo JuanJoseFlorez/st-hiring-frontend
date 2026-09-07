@@ -4,6 +4,7 @@ import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import EventsList from './features/events/EventsList';
+import SettingsForm from './features/settings/SettingsForm';
 
 function App() {
   const [tab, setTab] = useState(0);
@@ -20,7 +21,7 @@ function App() {
       </Tabs>
       <Box sx={{ mt: 3 }}>
         {tab === 0 && <EventsList />}
-        {tab === 1 && <p>Settings go here</p>}
+        {tab === 1 && <SettingsForm />}
       </Box>
     </Container>
   );
