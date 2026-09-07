@@ -27,10 +27,11 @@ const settingsSchema = yup.object({
     .matches(EMAIL_REGEX, 'Invalid email'),
   maxTicketsPerOrder: yup
     .number()
-    .required('Required')
-    .integer()
-    .positive()
-    .max(Number.MAX_SAFE_INTEGER),
+    .typeError('Max tickets per order is required')
+    .required('Max tickets per order is required')
+    .integer('Max tickets per order must be a whole number')
+    .positive('Max tickets per order must be greater than 0')
+    .max(Number.MAX_SAFE_INTEGER, 'Max tickets per order is too large'),
 });
 
 const SettingsForm = () => {
@@ -43,11 +44,9 @@ const SettingsForm = () => {
   const isNotFound = Boolean(error && 'status' in error && error.status === 404);
   if (error && !isNotFound) return <Alert severity="error">Failed to load settings</Alert>;
 
-  const initialValues: SettingsFormValues = data ?? {
-    siteName: '',
-    supportEmail: '',
-    maxTicketsPerOrder: '',
-  };
+  const initialValues: SettingsFormValues = data
+    ? { siteName: data.siteName, supportEmail: data.supportEmail, maxTicketsPerOrder: data.maxTicketsPerOrder }
+    : { siteName: '', supportEmail: '', maxTicketsPerOrder: '' };
 
   const handleSubmit = async (values: SettingsFormValues) => {
     const payload: SettingsInput = { ...values, maxTicketsPerOrder: Number(values.maxTicketsPerOrder) };
