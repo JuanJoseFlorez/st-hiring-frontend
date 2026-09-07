@@ -16,7 +16,7 @@ export const api = createApi({
     }),
     postSettings: builder.mutation<Settings, SettingsInput>({
       query: (body) => ({ url: '/settings', method: 'POST', body }),
-      invalidatesTags: ['Settings'],
+      invalidatesTags: (_result, error) => (error ? [] : ['Settings']),
     }),
   }),
 });
