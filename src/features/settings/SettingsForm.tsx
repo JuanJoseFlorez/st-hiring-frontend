@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Formik, Form } from 'formik';
+import { Formik, Form, FormikHelpers } from 'formik';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -48,10 +48,15 @@ const SettingsForm = () => {
     ? { siteName: data.siteName, supportEmail: data.supportEmail, maxTicketsPerOrder: data.maxTicketsPerOrder }
     : { siteName: '', supportEmail: '', maxTicketsPerOrder: '' };
 
-  const handleSubmit = async (values: SettingsFormValues) => {
+  const handleSubmit = async (values: SettingsFormValues, { resetForm }: FormikHelpers<SettingsFormValues>) => {
     const payload: SettingsInput = { ...values, maxTicketsPerOrder: Number(values.maxTicketsPerOrder) };
     try {
       await postSettings(payload).unwrap();
+      // RTK Query's isLoading never flips true for this refetch once data has
+      // loaded successfully once (only isFetching does), so Formik never
+      // remounts with fresh initialValues on its own — resetForm re-baselines
+      // dirty to the values that were just saved.
+      resetForm({ values });
       setSaved(true);
     } catch {
       // isSaveError below already reflects the failure to the user
@@ -61,7 +66,7 @@ const SettingsForm = () => {
   return (
     <>
       <Formik initialValues={initialValues} validationSchema={settingsSchema} onSubmit={handleSubmit}>
-        {({ values, errors, touched, handleChange, handleBlur, setFieldValue }) => (
+        {({ values, errors, touched, dirty, handleChange, handleBlur, setFieldValue }) => (
           <Form>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: 480 }}>
               <TextField
@@ -95,7 +100,7 @@ const SettingsForm = () => {
                 helperText={touched.maxTicketsPerOrder && errors.maxTicketsPerOrder}
               />
               {isSaveError && <Alert severity="error">Failed to save settings</Alert>}
-              <Button type="submit" variant="contained" disabled={isSaving}>
+              <Button type="submit" variant="contained" disabled={isSaving || !dirty}>
                 Save
               </Button>
             </Box>
